@@ -1,0 +1,43 @@
+1)  pip install django django-rest-framework
+2)  django-admin startproject backend
+3)  cd backend
+4)  python .\manage.py startapp todo
+5)  models.py:
+---------------------------------------------------------------------------------------------------------------------
+class Todo(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.CharField(max_length=300)
+    done = models.BooleanField(default=False)
+    created_date = models.DateTimeField(auto_now_add=True)
+    published_date = models.DateTimeField()
+
+    def __str__(self):
+        st = f'{self.title} - {self.description} - {self.published_date}'
+        return st
+    
+    class Meta:
+        verbose_name = 'Задача'
+        verbose_name_plural = 'Задача'
+        ordering = ['title', 'description', '-published_date']
+---------------------------------------------------------------------------------------------------------------------
+6)  admin.py:
+---------------------------------------------------------------------------------------------------------------------
+
+from django.contrib import admin
+from .models import Todo
+
+# Register your models here.
+class TodoAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title', 'description', 'done', 'published_date')
+
+    list_display_links = ('id', 'title',)
+    # поиск по полям: вкладка admin
+    search_fields = ['id', 'title', 'description']
+    # фильтр: вкладка admin
+    list_filter = ['title', 'description', 'published_date']
+
+
+admin.site.register(Todo, TodoAdmin)
+
+---------------------------------------------------------------------------------------------------------------------
+7)  python .\manage.py makemigrations todo
