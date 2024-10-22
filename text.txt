@@ -7,7 +7,7 @@
 class Todo(models.Model):
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=300)
-    done = models.BooleanField(default=False)
+    doneodels.BooleanField(default=False)
     created_date = models.DateTimeField(auto_now_add=True)
     published_date = models.DateTimeField()
 
@@ -41,3 +41,66 @@ admin.site.register(Todo, TodoAdmin)
 
 ---------------------------------------------------------------------------------------------------------------------
 7)  python .\manage.py makemigrations todo
+8)  python .\manage.py migrate
+9)  settings.py
+---------------------------------------------------------------------------------------------------------------------
+INSTALLED_APPS = [
+    ....
+    'todo.apps.TodoConfig',
+    'rest_framework',
+]
+---------------------------------------------------------------------------------------------------------------------
+10)  python manage.py runserver
+11)  python manage.py createsuperuser
+12)  serializers.py:
+---------------------------------------------------------------------------------------------------------------------
+from .models import Todo
+from rest_framework import serializers
+
+
+class ContractSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Todo
+        fields = '__all__'
+ --------------------------------------------------------------------------------------------------------------------
+13) permission.py:
+ --------------------------------------------------------------------------------------------------------------------
+from rest_framework import permissions
+
+
+class CustomPermission(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.user.is_staff:
+            return True
+        elif request in permissions.SAFE_METHODS:
+            return True
+---------------------------------------------------------------------------------------------------------------------
+14) pagination.py:
+---------------------------------------------------------------------------------------------------------------------
+from rest_framework.pagination import LimitOffsetPagination
+
+
+class MyLimitOffsetPagination(LimitOffsetPagination):
+    default_limit = 1
+    limit_query_param = 'mylimit'
+    offset_query_param = 'myoffset'
+    max_limit = 3
+---------------------------------------------------------------------------------------------------------------------
+14)  views.py:
+ --------------------------------------------------------------------------------------------------------------------
+from django.shortcuts import render
+from .models import Todo
+from .serializers import TodoSerializers
+from .permission import CustomPermission
+from rest_framework import filters
+from .pagination import MyLimitOffsetPagination
+
+# Create your views here.
+class ContractsViewSet(viewsets.ModelViewSet): # type: ignore
+    queryset = Todo.objects.all()
+    serializer_class = TodoSerializers
+    permission_classes = [CustomPermission]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['title', 'description']
+    pagination_class = MyLimitOffsetPagination
+--------------------------------------------------------------------------------------------------------------------
