@@ -86,17 +86,17 @@ class MyLimitOffsetPagination(LimitOffsetPagination):
     offset_query_param = 'myoffset'
     max_limit = 3
 ---------------------------------------------------------------------------------------------------------------------
-14)  views.py:
+15)  views.py:
  --------------------------------------------------------------------------------------------------------------------
 from django.shortcuts import render
 from .models import Todo
 from .serializers import TodoSerializers
 from .permission import CustomPermission
-from rest_framework import filters
+from rest_framework import filters, viewsets
 from .pagination import MyLimitOffsetPagination
 
 # Create your views here.
-class ContractsViewSet(viewsets.ModelViewSet): # type: ignore
+class TodoViewSet(viewsets.ModelViewSet): 
     queryset = Todo.objects.all()
     serializer_class = TodoSerializers
     permission_classes = [CustomPermission]
@@ -104,3 +104,79 @@ class ContractsViewSet(viewsets.ModelViewSet): # type: ignore
     search_fields = ['title', 'description']
     pagination_class = MyLimitOffsetPagination
 --------------------------------------------------------------------------------------------------------------------
+16) backend/urls.py:
+--------------------------------------------------------------------------------------------------------------------
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('todo.urls')),
+]
+-------------------------------------------------------------------------------------------------------------------
+17) urls.py:
+-------------------------------------------------------------------------------------------------------------------
+from django.urls import path, include
+from rest_framework import routers
+from .views import TodoViewSet
+
+
+router = routers.DefaultRouter()
+router.register('todo', TodoViewSet)
+
+
+urlpatterns = [
+    path('', include(router.urls)),
+    path('auth/', include('rest_framework.urls')),
+]
+-------------------------------------------------------------------------------------------------------------------
+18) pip install -U drf-yasg
+19) pip install -U drf-yasg[validation]
+20) backend/settings.py
+-------------------------------------------------------------------------------------------------------------------
+INSTALLED_APPS = [
+    ....
+    'drf_yasg',
+    ....
+]
+-------------------------------------------------------------------------------------------------------------------
+21) backend/urls.py:
+-------------------------------------------------------------------------------------------------------------------
+from django.contrib import admin
+from django.urls import path, include
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
+
+schema_view = get_schema_view(
+   openapi.Info(
+      title="Snippets API",
+      default_version='v1',
+      description="Test description",
+      terms_of_service="https://www.google.com/policies/terms/",
+      contact=openapi.Contact(email="contact@snippets.local"),
+      license=openapi.License(name="BSD License"),
+   ),
+   public=True, permission_classes=(permissions.AllowAny,),
+)
+
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('todo.urls')),
+    path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+]
+------------------------------------------------------------------------------------------------------------------
+22) pip install django-filter
+23) backend/settings.py
+-------------------------------------------------------------------------------------------------------------------
+INSTALLED_APPS = [
+    ....
+    'django_filters',
+    ....
+]
+-------------------------------------------------------------------------------------------------------------------
+24) python manage.py startapp frontend
+25) npm install axios

@@ -2,11 +2,11 @@ from django.shortcuts import render
 from .models import Todo
 from .serializers import TodoSerializers
 from .permission import CustomPermission
-from rest_framework import filters
+from rest_framework import filters, viewsets
 from .pagination import MyLimitOffsetPagination
 
 # Create your views here.
-class ContractsViewSet(viewsets.ModelViewSet): # type: ignore
+class TodoViewSet(viewsets.ModelViewSet): 
     queryset = Todo.objects.all()
     serializer_class = TodoSerializers
     permission_classes = [CustomPermission]
