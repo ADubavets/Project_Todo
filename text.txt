@@ -178,5 +178,30 @@ INSTALLED_APPS = [
     ....
 ]
 -------------------------------------------------------------------------------------------------------------------
-24) python manage.py startapp frontend
-25) npm install axios
+24) pip install django-cors-headers
+25) settings.py:
+-------------------------------------------------------------------------------------------------------------------
+INSTALLED_APPS = [
+    ...
+    'rest_framework',
+    'corsheaders',
+    ...
+]
+
+MIDDLEWARE = [
+    ...
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
+]
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+-------------------------------------------------------------------------------------------------------------------
+26) npx create-react-app frontend
+27) npm i axios reactstrap bootstrap
+28) 
