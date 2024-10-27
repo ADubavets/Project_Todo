@@ -1,25 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import TodoList from './TodoList.jsx';
+import {useState } from 'react';
+import axios from 'axios';
+
+const API_URL = '/todos/'
 
 function App() {
+  const [todos, setTodos] = useState([])
+  async function getTodoc() {
+    const response = await axios.get(API_URL)
+    console.log(response.data)
+    setTodos(response.data)
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button onClick={getTodoc}>Обновить список дел</button>
+      <h1>Список наших дел</h1>
+      <TodoList todos={todos}/>
     </div>
-  );
+  )
 }
+
 
 export default App;

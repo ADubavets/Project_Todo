@@ -204,4 +204,27 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 -------------------------------------------------------------------------------------------------------------------
 26) npx create-react-app frontend
 27) npm i axios reactstrap bootstrap
-28) 
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+28) pip install djangorestframework-simplejwt
+29) backend/settings.py:
+-------------------------------------------------------------------------------------------------------------------
+INSTALLED_APPS = [
+
+...
+'rest_framework_simplejwt',
+'rest_framework_simplejwt.token_blacklist',
+...
+
+]
+
+REST_FRAMEWORK = {
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+
+}
+-------------------------------------------------------------------------------------------------------------------
+30) python .\manage.py migrate 
+31) 

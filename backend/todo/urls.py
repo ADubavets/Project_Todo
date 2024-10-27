@@ -4,7 +4,7 @@ from .views import TodoViewSet
 
 
 router = routers.DefaultRouter()
-router.register('todo', TodoViewSet)
+router.register('todos', TodoViewSet, 'todo')
 
 
 urlpatterns = [
