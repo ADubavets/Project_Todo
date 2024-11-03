@@ -1,41 +1,80 @@
-import {Fragment, useState} from "react";
-import {Button, Modal, ModalHeader, ModalBody} from "reactstrap";
+// TodoFormModal.js
+import React, { useState } from 'react';
+import Modal from './Modal';
+import { API_URL } from "./index.js";
 
-const ModalTodo = (props) => {
-    const [visible, setVisible] = useState(false)
-    var button = <Button onClick={() => toggle()}>Редактировать</Button>;
+const TodoFormModal = ({ show, handleClose }) => {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [publishedDate, setPublishedDate] = useState('');
 
-    const toggle = () => {
-        setVisible(!visible)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title,
+          description,
+          done: false,
+          published_date: publishedDate,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Задача добавлена:', data);
+        setTitle('');
+        setDescription('');
+        setPublishedDate('');
+        handleClose();
+      } else {
+        console.error('Ошибка при добавлении задачи');
+      }
+    } catch (error) {
+      console.error('Ошибка запроса:', error);
     }
+  };
 
-    if (props.create) {
-        button = (
-            <Button
-                color="primary"
-                className="float-right"
-                onClick={() => toggle()}
-                style={{minWidth: "200px"}}>
-                Добавить дело
-            </Button>
-        )
-    }
-    return (
-        <Fragment>
-            {button}
-            <Modal isOpen={visible} toggle={toggle}>
-                <ModalHeader
-                    style={{justifyContent: "center"}}>{props.create ? "Добавить дело" : "Редактировать дело"}</ModalHeader>
-                <ModalBody>
-                    <TodoForm
-                        todo={props.todo ? props.todo : []}
-                        resetState={props.resetState}
-                        toggle={toggle}
-                        newTodo{props.newTodo}
-                    />
-                </ModalBody>
-            </Modal>
-        </Fragment>
-    )
-}
-export default ModalTodo;
+  return (
+    <Modal show={show} handleClose={handleClose}>
+      <h2>Добавить новую задачу</h2>
+      <form onSubmit={handleSubmit}>
+        <label>
+          Название задачи:
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+        </label>
+        <label>
+          Описание задачи:
+          <input
+            type="text"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          />
+        </label>
+        <label>
+          Дата публикации:
+          <input
+            type="datetime-local"
+            value={publishedDate}
+            onChange={(e) => setPublishedDate(e.target.value)}
+            required
+          />
+        </label>
+        <button type="submit">Добавить</button>
+      </form>
+    </Modal>
+  );
+};
+
+export default TodoFormModal;
