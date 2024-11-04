@@ -7,7 +7,7 @@ import { API_URL } from "./index.js";
 const Header = () => {
   return (
       <div className="text-center">
-          <h1 style={{textAlign: "center"}}>Список наших дел</h1>
+          <h1 style={{textAlign: "center", top: "100px"}}>Список наших дел</h1>
       </div>)
 }
 
@@ -64,11 +64,11 @@ function App() {
       <main>
         <TodoList todos={todos} removeTodo={removeTodo} editTodo={editTodo}/> 
       </main>
-      <footer style={{textAlign: "center"}}>
+      <footer style={{textAlign: "center", bottom: "50px"}}>
         <button type="button" class="btn btn-primary" onClick={getTodos}>
-          <i class="bi bi-cloud-upload-fill"></i> Обновить список дел</button>
+          <i className="bi bi-cloud-upload-fill"></i> Обновить список дел</button>
         <button type="button" class="btn btn-primary" style={{margin: "50px", }} onClick={handleShowModal}>
-          <i class="bi bi-building-add"></i> Добавить задачу
+          <i className="bi bi-database-add"></i> Добавить дело
         </button>
 
         {/* Модальное окно для добавления задачи */}

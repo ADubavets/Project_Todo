@@ -1,12 +1,28 @@
 // TodoFormModal.js
-import React, { useState } from 'react';
-import Modal from './Modal';
+import React, { useState, useEffect } from 'react';
 import { API_URL } from "./index.js";
+import { Modal, Button, Form } from 'react-bootstrap';
 
 const TodoFormModal = ({ show, handleClose }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [publishedDate, setPublishedDate] = useState('');
+  const [isFormValid, setIsFormValid] = useState(false);
+
+  useEffect(() => {
+    // Установить publishedDate на текущую дату при открытии модального окна
+    if (show) {
+      const currentDate = new Date();
+      // Установка даты в формате 'YYYY-MM-DDTHH:mm'
+      const formattedDate = currentDate.toISOString().slice(0, 16); 
+      setPublishedDate(formattedDate);
+    }
+  }, [show]);
+
+  useEffect(() => {
+    // Проверка заполненности полей
+    setIsFormValid(title.trim() !== '' && description.trim() !== '' && publishedDate !== '');
+  }, [title, description, publishedDate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -40,39 +56,53 @@ const TodoFormModal = ({ show, handleClose }) => {
     }
   };
 
+  if (!show) return null;
+
   return (
-    <Modal show={show} handleClose={handleClose}>
-      <h2>Добавить новую задачу</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Название задачи:
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </label>
-        <label>
-          Описание задачи:
-          <input
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          />
-        </label>
-        <label>
-          Дата публикации:
-          <input
-            type="datetime-local"
-            value={publishedDate}
-            onChange={(e) => setPublishedDate(e.target.value)}
-            required
-          />
-        </label>
-        <button type="submit">Добавить</button>
-      </form>
+    <Modal show={show} onHide={handleClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>Добавить новую задачу</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group controlId="formTitle">
+            <Form.Label>Название задачи</Form.Label>
+            <Form.Control
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Введите название задачи"
+              required
+            />
+          </Form.Group>
+
+          <Form.Group controlId="formDescription">
+            <Form.Label>Описание задачи</Form.Label>
+            <Form.Control
+              type="text"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Введите описание задачи"
+              required
+            />
+          </Form.Group>
+
+          <Form.Group controlId="formPublishedDate">
+            <Form.Label>Дата публикации</Form.Label>
+            <Form.Control
+              type="datetime-local"
+              value={publishedDate}
+              onChange={(e) => setPublishedDate(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <p></p>
+          <Button variant="primary" type="submit" disabled={!isFormValid}>
+            Добавить
+          </Button>
+
+        </Form>
+      </Modal.Body>
     </Modal>
   );
 };

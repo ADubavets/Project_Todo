@@ -2,7 +2,7 @@ import React from "react";
 
 
 const Todo = (props) => {
-
+    
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         const day = String(date.getDate()).padStart(2, '0');
@@ -26,11 +26,6 @@ const Todo = (props) => {
                 }
             </td>
             <td>
-                <button type="button" className="btn btn-danger" onClick={() => props.removeTodo(props.todo)}>
-                    Удалить
-                </button>
-            </td>
-            <td>
                 <button type="button" className="btn btn-success" onClick={() => props.editTodo(props.todo, true)}>
                     Выполнено
                 </button>
@@ -40,6 +35,12 @@ const Todo = (props) => {
                     Отмена
                 </button>
             </td>
+            <td>
+                <button type="button" className="btn btn-danger" onClick={() => props.removeTodo(props.todo)}>
+                    Удалить
+                </button>
+            </td>
+            
         </tr>
 
     )
