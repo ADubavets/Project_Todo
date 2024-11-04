@@ -47,5 +47,3 @@ const Todo = (props) => {
 }
 
 export default Todo;
-
-// https://habr.com/ru/articles/713490/
