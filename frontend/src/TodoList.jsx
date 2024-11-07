@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Todo from './Todo.jsx';
 
-const TodoList = ({ todos, removeTodo, editTodo }) => {
+const TodoList = ({ todos, removeTodo, editTodo}) => {
   const [sortField, setSortField] = useState(null);
   const [sortDirection, setSortDirection] = useState('asc');
   const [filters, setFilters] = useState({
